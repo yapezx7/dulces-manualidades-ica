@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#E91E8C" />
+  <title>Dulces Manualidades Ica - App Oficial</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #FFF5FA;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .gradient-header {
+      background: linear-gradient(135deg, #E91E8C 0%, #7B1FA2 55%, #00B0FF 100%);
+    }
+    .tab-active {
+      color: #E91E8C;
+      border-top: 3px solid #E91E8C;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body class="pb-24 text-gray-800">
+
+  <!-- CABECERA PRINCIPAL -->
+  <header class="gradient-header text-white p-5 rounded-b-3xl shadow-lg">
+    <div class="max-w-xl mx-auto">
+      <div class="flex justify-between items-center mb-3">
+        <span class="bg-yellow-300 text-gray-900 text-xs font-extrabold px-3 py-1 rounded-full shadow">
+          📍 Ica, Perú • Moneda: Soles (S/)
+        </span>
+        <button onclick="switchTab('admin')" class="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full font-bold">
+          🔐 Panel Propietario
+        </button>
+      </div>
+
+      <div class="flex flex-col items-center text-center">
+        <div class="w-24 h-24 rounded-full bg-white border-4 border-pink-400 shadow-md flex flex-col items-center justify-center p-2 mb-2">
+          <span class="text-3xl">🎨</span>
+          <span class="text-[11px] font-black leading-tight text-purple-800">Dulces<br>Manualidades<br>Ica</span>
+        </div>
+        <h1 class="text-2xl font-black text-yellow-300 drop-shadow">¡HACEMOS MAQUETAS Y MUCHO MÁS!</h1>
+        <div class="bg-yellow-300 text-indigo-950 font-extrabold text-xs px-4 py-1.5 rounded-full mt-2 shadow">
+          ♥ Creamos ideas, damos vida a tus proyectos ♥
+        </div>
+        <p class="text-xs text-white/90 mt-2 font-medium">
+          Calidad, Creatividad y Responsabilidad • WhatsApp: <strong>936880308</strong>
+        </p>
+
+        <div class="grid grid-cols-2 gap-3 w-full mt-4">
+          <button onclick="switchTab('catalog')" class="bg-yellow-300 hover:bg-yellow-400 text-gray-900 font-extrabold py-3 px-4 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm">
+            📚 Ver catálogo
+          </button>
+          <button onclick="switchTab('quote')" class="bg-white hover:bg-pink-50 text-pink-600 font-extrabold py-3 px-4 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm">
+            📝 Solicitar cotización
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="max-w-xl mx-auto p-4">
+
+    <!-- PANTALLA 1: INICIO -->
+    <section id="screen-home" class="space-y-6">
+      <div>
+        <h2 class="text-lg font-black text-purple-800">Categorías de Trabajos</h2>
+        <p class="text-xs text-gray-600 mb-3">Toca una categoría para ver los detalles o pedir tu cotización</p>
+        <div id="home-categories" class="grid grid-cols-2 gap-2.5"></div>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-black text-pink-600 mb-2">Trabajos Destacados</h2>
+        <div id="home-featured" class="space-y-3"></div>
+      </div>
+
+      <div class="bg-yellow-50 border-2 border-yellow-300 rounded-2xl p-4 text-center shadow-sm">
+        <h3 class="font-black text-purple-900 text-base">¿Tienes una tarea escolar o proyecto personalizado?</h3>
+        <p class="text-xs text-gray-700 mt-1">Cuéntanos qué medidas, materiales o personaje necesitas y recibe tu cotización en soles (S/).</p>
+        <button onclick="switchTab('quote')" class="mt-3 w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl shadow">
+          Ir al Formulario de Pedidos
+        </button>
+      </div>
+    </section>
+
+    <!-- PANTALLA 2: CATÁLOGO -->
+    <section id="screen-catalog" class="hidden space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-black text-purple-800">Catálogo de Productos</h2>
+        <button onclick="filterCatalog('ALL')" class="text-xs bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded-full">
+          Ver todas
+        </button>
+      </div>
+
+      <div id="catalog-filter-chips" class="flex gap-2 overflow-x-auto pb-2"></div>
+
+      <div class="bg-sky-50 border border-sky-200 text-sky-900 text-xs p-3 rounded-xl">
+        ℹ️ <strong>Transparencia:</strong> No inventamos precios ni usamos fotos ajenas como trabajos propios. Cada proyecto se cotiza a medida según tus dimensiones y materiales.
+      </div>
+
+      <div id="catalog-list" class="space-y-4"></div>
+    </section>
+
+    <!-- PANTALLA 3: FORMULARIO DE COTIZACIÓN -->
+    <section id="screen-quote" class="hidden space-y-4">
+      <h2 class="text-xl font-black text-pink-600">Solicitar Cotización</h2>
+
+      <div class="bg-white border border-purple-200 p-3 rounded-xl text-xs text-gray-600 flex items-center gap-2">
+        <span>🔒</span>
+        <span>Tus datos se usarán únicamente para atender tu solicitud de cotización en Dulces Manualidades Ica.</span>
+      </div>
+
+      <div id="form-errors" class="hidden bg-red-50 border border-red-300 text-red-700 p-3 rounded-xl text-xs font-semibold space-y-1"></div>
+
+      <!-- A. DATOS DEL CLIENTE -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm space-y-3">
+        <h3 class="font-extrabold text-purple-800 text-sm">A. Datos del Cliente</h3>
+        <input id="f-name" type="text" placeholder="Nombres y apellidos * (Obligatorio)" class="w-full border rounded-xl p-2.5 text-sm" />
+        <input id="f-phone" type="tel" placeholder="Número de celular * (Ej. 936880308)" class="w-full border rounded-xl p-2.5 text-sm" />
+        <input id="f-email" type="email" placeholder="Correo electrónico (Opcional)" class="w-full border rounded-xl p-2.5 text-sm" />
+        <input id="f-district" type="text" placeholder="Distrito en Ica (Ej. Ica, Parcona, La Tinguiña - Opcional)" class="w-full border rounded-xl p-2.5 text-sm" />
+      </div>
+
+      <!-- B. INFORMACIÓN DEL TRABAJO -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm space-y-3">
+        <h3 class="font-extrabold text-purple-800 text-sm">B. Información del Trabajo</h3>
+        <select id="f-category" class="w-full border rounded-xl p-2.5 text-sm bg-white"></select>
+        <input id="f-product" type="text" placeholder="Nombre del producto o proyecto * (Obligatorio)" class="w-full border rounded-xl p-2.5 text-sm" />
+        <textarea id="f-desc" rows="3" placeholder="Descripción detallada de lo que necesita * (Obligatorio)" class="w-full border rounded-xl p-2.5 text-sm"></textarea>
+        <input id="f-grade" type="text" placeholder="Grado escolar o nivel educativo (si corresponde)" class="w-full border rounded-xl p-2.5 text-sm" />
+        <div class="grid grid-cols-2 gap-2">
+          <input id="f-dim" type="text" placeholder="Tamaño o dimensiones" class="w-full border rounded-xl p-2.5 text-sm" />
+          <input id="f-qty" type="number" min="1" value="1" placeholder="Cantidad *" class="w-full border rounded-xl p-2.5 text-sm" />
+        </div>
+        <input id="f-mat" type="text" placeholder="Materiales o características especiales" class="w-full border rounded-xl p-2.5 text-sm" />
+      </div>
+
+      <!-- C. PERSONALIZACIÓN -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm space-y-3">
+        <h3 class="font-extrabold text-purple-800 text-sm">C. Personalización</h3>
+        <input id="f-colors" type="text" placeholder="Colores preferidos" class="w-full border rounded-xl p-2.5 text-sm" />
+        <input id="f-theme" type="text" placeholder="Tema o personaje" class="w-full border rounded-xl p-2.5 text-sm" />
+        <input id="f-text" type="text" placeholder="Texto o nombre que debe aparecer en el trabajo" class="w-full border rounded-xl p-2.5 text-sm" />
+        <textarea id="f-notes" rows="2" placeholder="Instrucciones adicionales" class="w-full border rounded-xl p-2.5 text-sm"></textarea>
+      </div>
+
+      <!-- D. FECHA Y PRESUPUESTO -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm space-y-3">
+        <h3 class="font-extrabold text-purple-800 text-sm">D. Fecha y Presupuesto</h3>
+        <label class="block text-xs text-gray-500">Fecha en la que necesita el trabajo * (Obligatorio):</label>
+        <input id="f-date" type="date" class="w-full border rounded-xl p-2.5 text-sm" />
+        <input id="f-budget" type="number" step="0.5" placeholder="Presupuesto aproximado en soles S/ (Opcional)" class="w-full border rounded-xl p-2.5 text-sm" />
+        <select id="f-delivery" onchange="toggleAddressField()" class="w-full border rounded-xl p-2.5 text-sm bg-white">
+          <option value="Recoger en persona">Método de entrega: Recoger en persona</option>
+          <option value="Consultar por entrega">Método de entrega: Consultar por entrega</option>
+        </select>
+        <input id="f-address" type="text" placeholder="Dirección o referencia de entrega en Ica *" class="hidden w-full border rounded-xl p-2.5 text-sm" />
+      </div>
+
+      <!-- E. IMÁGENES DE REFERENCIA -->
+      <div class="bg-white p-4 rounded-2xl shadow-sm space-y-3">
+        <h3 class="font-extrabold text-purple-800 text-sm">E. Imágenes de Referencia</h3>
+        <p class="text-xs text-gray-600">Selecciona bocetos o fotos de referencia desde tu galería (JPG, PNG, WEBP máx. 8 MB).</p>
+        <input id="f-images" type="file" accept="image/jpeg,image/png,image/webp" multiple onchange="handleImageSelection(event)" class="w-full text-xs" />
+        <p id="img-error" class="text-xs text-red-600 hidden"></p>
+        <div id="img-preview-list" class="flex gap-2 overflow-x-auto pt-1"></div>
+      </div>
+
+      <!-- F. BOTONES DEL FORMULARIO -->
+      <div class="space-y-2.5">
+        <button onclick="prepareQuoteReview()" class="w-full bg-green-500 hover:bg-green-600 text-white font-black py-3.5 rounded-2xl shadow-md text-base">
+          💬 Enviar solicitud por WhatsApp
+        </button>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="clearForm()" class="bg-white border border-gray-300 text-gray-700 font-bold py-2.5 rounded-xl text-xs">
+            🧹 Limpiar formulario
+          </button>
+          <button onclick="switchTab('catalog')" class="bg-white border border-purple-300 text-purple-800 font-bold py-2.5 rounded-xl text-xs">
+            ⬅ Volver al catálogo
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA 4: PANEL ADMINISTRATIVO -->
+    <section id="screen-admin" class="hidden space-y-4">
+      <div id="admin-login-box" class="bg-white p-5 rounded-2xl shadow space-y-3">
+        <h2 class="text-lg font-black text-purple-800">🔐 Acceso Propietario</h2>
+        <p class="text-xs text-gray-600">Ingresa el PIN de propietario para gestionar catálogo, precios y pedidos registrados (PIN inicial de prueba: <strong>9368</strong>).</p>
+        <input id="admin-pin" type="password" placeholder="PIN Administrativo" class="w-full border rounded-xl p-2.5 text-sm" />
+        <button onclick="loginAdmin()" class="w-full bg-pink-600 text-white font-bold py-2.5 rounded-xl">Ingresar al Panel</button>
+      </div>
+
+      <div id="admin-dashboard" class="hidden space-y-4">
+        <div class="bg-purple-800 text-white p-4 rounded-2xl flex justify-between items-center">
+          <div>
+            <h3 class="font-black text-base">Panel Administrativo</h3>
+            <p class="text-xs text-yellow-300">Dulces Manualidades Ica</p>
+          </div>
+          <button onclick="logoutAdmin()" class="text-xs bg-white/20 px-3 py-1 rounded-full">Cerrar sesión</button>
+        </div>
+
+        <!-- Registro manual de pedidos recibidos directamente por WhatsApp -->
+        <div class="bg-yellow-50 border border-yellow-300 p-4 rounded-2xl space-y-2">
+          <h4 class="font-extrabold text-purple-900 text-sm">📥 Registrar Pedido Recibido por WhatsApp</h4>
+          <p class="text-xs text-gray-700">Los pedidos conversados directamente en WhatsApp se pueden registrar aquí para llevar el control de estados y fechas de entrega.</p>
+          <input id="adm-client" type="text" placeholder="Nombre del cliente" class="w-full border rounded-lg p-2 text-xs bg-white" />
+          <input id="adm-phone" type="text" placeholder="Celular del cliente" class="w-full border rounded-lg p-2 text-xs bg-white" />
+          <input id="adm-work" type="text" placeholder="Trabajo o maqueta solicitada" class="w-full border rounded-lg p-2 text-xs bg-white" />
+          <div class="grid grid-cols-2 gap-2">
+            <input id="adm-price" type="number" placeholder="Precio cotizado (S/)" class="w-full border rounded-lg p-2 text-xs bg-white" />
+            <input id="adm-date" type="date" class="w-full border rounded-lg p-2 text-xs bg-white" />
+          </div>
+          <button onclick="registerManualOrder()" class="w-full bg-pink-600 text-white font-bold py-2 rounded-xl text-xs">
+            + Guardar Pedido en Base de Datos
+          </button>
+        </div>
+
+        <!-- Lista de Pedidos y Estados -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm space-y-3">
+          <h4 class="font-extrabold text-purple-800 text-sm">📋 Gestión de Pedidos y Estados</h4>
+          <div id="admin-orders-list" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL DE REVISIÓN PREVIA Y CONFIRMACIÓN TRANSPARENTE -->
+  <div id="review-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 max-h-[90vh] overflow-y-auto space-y-3 shadow-2xl">
+      <h3 id="modal-stage-title" class="text-lg font-black text-purple-800">1. Revisa tu Solicitud</h3>
+      <div id="modal-stage-banner" class="bg-yellow-50 border border-yellow-300 text-gray-800 text-xs p-3 rounded-xl font-semibold">
+        Estado: Solicitud preparada. Verifica que todos tus datos estén correctos antes de abrir WhatsApp.
+      </div>
+      <div id="modal-img-notice" class="hidden bg-purple-50 border border-purple-200 text-purple-900 text-xs p-3 rounded-xl">
+        📎 Seleccionaste imágenes de referencia. Cuando se abra el chat de WhatsApp, pulsa el ícono del clip (📎) o cámara para adjuntar tus fotos.
+      </div>
+      <pre id="modal-message-preview" class="bg-gray-100 p-3 rounded-xl text-[11px] whitespace-pre-wrap font-mono text-gray-800 max-h-60 overflow-y-auto"></pre>
+
+      <div class="space-y-2 pt-2">
+        <button onclick="confirmAndOpenWhatsApp()" class="w-full bg-green-500 hover:bg-green-600 text-white font-black py-3 rounded-xl shadow">
+          ✅ Confirmar y Abrir WhatsApp (936880308)
+        </button>
+        <button onclick="copyWhatsAppMessage()" class="w-full bg-sky-100 text-sky-900 font-bold py-2.5 rounded-xl text-xs">
+          📋 Copiar mensaje (por si usas WhatsApp Web)
+        </button>
+        <button onclick="closeReviewModal()" class="w-full text-gray-500 font-semibold py-2 text-xs">
+          Volver a editar datos
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+  <a href="https://api.whatsapp.com/send?phone=51936880308&text=Hola%20Dulces%20Manualidades%20Ica%2C%20deseo%20consultar%20por%20un%20trabajo%20personalizado."
+     target="_blank"
+     class="fixed bottom-20 right-4 bg-green-500 hover:bg-green-600 text-white font-extrabold px-4 py-3 rounded-full shadow-xl flex items-center gap-2 text-xs z-40">
+    <span>💬 WhatsApp 936880308</span>
+  </a>
+
+  <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-2 z-40">
+    <button id="nav-home" onclick="switchTab('home')" class="tab-active flex flex-col items-center text-xs pt-1 px-3">
+      <span>🏠</span><span>Inicio</span>
+    </button>
+    <button id="nav-catalog" onclick="switchTab('catalog')" class="flex flex-col items-center text-xs text-gray-500 pt-1 px-3">
+      <span>📚</span><span>Catálogo</span>
+    </button>
+    <button id="nav-quote" onclick="switchTab('quote')" class="flex flex-col items-center text-xs text-gray-500 pt-1 px-3">
+      <span>📝</span><span>Cotizar</span>
+    </button>
+    <button id="nav-admin" onclick="switchTab('admin')" class="flex flex-col items-center text-xs text-gray-500 pt-1 px-3">
+      <span>⚙️</span><span>Admin</span>
+    </button>
+  </nav>
+
+  <script>
+    const BUSINESS_PHONE_INTL = "51936880308";
+
+    const CATEGORIES = [
+      { id: "Maquetas escolares", color: "bg-pink-600 text-white", icon: "🏛️" },
+      { id: "Aros de olimpiadas", color: "bg-yellow-400 text-gray-900", icon: "🏅" },
+      { id: "Trípticos", color: "bg-purple-600 text-white", icon: "📖" },
+      { id: "Piñatas personalizadas", color: "bg-sky-500 text-white", icon: "🎉" },
+      { id: "Proyectos escolares", color: "bg-lime-500 text-gray-900", icon: "🔬" },
+      { id: "Bitácoras de lectura", color: "bg-rose-500 text-white", icon: "📓" },
+      { id: "Manualidades", color: "bg-orange-500 text-white", icon: "✂️" },
+      { id: "Disfraces reciclados", color: "bg-fuchsia-600 text-white", icon: "♻️" },
+      { id: "Vestidos reciclados", color: "bg-pink-500 text-white", icon: "👗" },
+      { id: "Otros trabajos escolares", color: "bg-cyan-500 text-white", icon: "🎒" }
+    ];
+
+    const INITIAL_PRODUCTS = [
+      { id: "P1", name: "Maquetas Escolares Personalizadas (Ej. Pirámides de Egipto, Sistema Solar)", category: "Maquetas escolares", desc: "Elaboradas a medida según el tema del curso, grado escolar y medidas indicadas.", price: null, time: "2 a 4 días hábiles", options: "Tecnopor, cartón, trupán, luces LED opcionales" },
+      { id: "P2", name: "Aros de Olimpiadas Decorados", category: "Aros de olimpiadas", desc: "Aros forrados y decorados con temática deportiva, insignia o mascota del aula.", price: null, time: "2 a 3 días hábiles", options: "Cintas, flores y letras en microporoso" },
+      { id: "P3", name: "Trípticos Creativos y Lapbooks", category: "Trípticos", desc: "Trípticos escolares hechos a mano con bordes decorativos, relieves y excelente presentación.", price: null, time: "1 a 2 días hábiles", options: "Tamaño A4, A3 o mural desplegable" },
+      { id: "P4", name: "Piñatas Personalizadas Temáticas", category: "Piñatas personalizadas", desc: "Piñatas creativas del personaje, número o temática favorita para cumpleaños y eventos.", price: null, time: "3 a 5 días hábiles", options: "Nombre, edad y colores a elección" },
+      { id: "P5", name: "Proyectos Escolares y Feria de Ciencias", category: "Proyectos escolares", desc: "Presentación visual y maquetas demostrativas para exposiciones escolares.", price: null, time: "3 a 5 días hábiles", options: "Incluye rotulado y paneles" },
+      { id: "P6", name: "Bitácoras de Lectura / Plan Lector", category: "Bitácoras de lectura", desc: "Portadas decoradas en alto relieve con los personajes de la obra literaria.", price: null, time: "2 a 3 días hábiles", options: "Microporoso normal, escarchado o tela" },
+      { id: "P7", name: "Manualidades y Recuerdos Escolares", category: "Manualidades", desc: "Porta lápices, dulceros, recuerdos y trabajos para fechas cívicas.", price: null, time: "1 a 4 días hábiles", options: "Por unidad o por docena" },
+      { id: "P8", name: "Disfraces con Material Reciclado", category: "Disfraces reciclados", desc: "Disfraces creativos hechos con cartón, botellas, tapas, papel y discos para concursos.", price: null, time: "4 a 7 días hábiles", options: "A medida del niño o niña" },
+      { id: "P9", name: "Vestidos Reciclados de Pasarela", category: "Vestidos reciclados", desc: "Vestidos ecológicos elaborados con pétalos plásticos, CDs, bolsas, papel o tapas.", price: null, time: "5 a 8 días hábiles", options: "Diseño sobre medidas y colores personalizados" },
+      { id: "P10", name: "Otros Trabajos Escolares (Murales, Álbumes, Líneas de Tiempo)", category: "Otros trabajos escolares", desc: "Apoyo creativo para todos los niveles: Inicial, Primaria y Secundaria.", price: null, time: "1 a 3 días hábiles", options: "Según indicaciones del docente" }
+    ];
+
+    const ORDER_STATUSES = [
+      "Nueva solicitud",
+      "Cotización enviada",
+      "Pendiente de confirmación",
+      "Confirmado",
+      "En preparación",
+      "Listo para entregar",
+      "Entregado",
+      "Cancelado"
+    ];
+
+    let selectedFiles = [];
+    let currentPreparedMessage = "";
+    let currentPreparedOrder = null;
+
+    function getOrders() {
+      return JSON.parse(localStorage.getItem("dmi_orders") || "[]");
+    }
+    function saveOrders(list) {
+      localStorage.setItem("dmi_orders", JSON.stringify(list));
+    }
+
+    function initApp() {
+      // Poblar categorías en Inicio
+      const homeCat = document.getElementById("home-categories");
+      homeCat.innerHTML = CATEGORIES.map(c => `
+        <button onclick="openCategory('${c.id}')" class="${c.color} font-extrabold text-xs py-3 px-3 rounded-2xl shadow flex items-center gap-2 text-left">
+          <span class="text-base">${c.icon}</span>
+          <span>${c.id}</span>
+        </button>
+      `).join("");
+
+      // Poblar destacados en Inicio
+      const featured = document.getElementById("home-featured");
+      featured.innerHTML = INITIAL_PRODUCTS.slice(0, 4).map(p => renderProductCard(p)).join("");
+
+      // Poblar selector de categorías en Formulario
+      const selectCat = document.getElementById("f-category");
+      selectCat.innerHTML = CATEGORIES.map(c => `<option value="${c.id}">${c.id}</option>`).join("");
+
+      // Poblar filtros del catálogo
+      const chips = document.getElementById("catalog-filter-chips");
+      chips.innerHTML = CATEGORIES.map(c => `
+        <button onclick="filterCatalog('${c.id}')" class="whitespace-nowrap bg-white border border-pink-300 text-purple-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+          ${c.icon} ${c.id}
+        </button>
+      `).join("");
+
+      filterCatalog("ALL");
+      renderAdminOrders();
+    }
+
+    function renderProductCard(p) {
+      const priceLabel = p.price ? `S/ ${p.price.toFixed(2)}` : "Consultar precio";
+      return `
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-pink-100 space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="bg-pink-100 text-pink-700 font-bold text-[11px] px-2.5 py-0.5 rounded-full">${p.category}</span>
+            <span class="bg-yellow-100 text-purple-900 font-bold text-[10px] px-2 py-0.5 rounded">FICHA DE REFERENCIA</span>
+          </div>
+          <h3 class="font-extrabold text-gray-900 text-sm">${p.name}</h3>
+          <p class="text-xs text-gray-600">${p.desc}</p>
+          <div class="text-xs text-gray-700">
+            <p class="font-extrabold text-pink-600 text-sm">Precio: ${priceLabel}</p>
+            <p>⏱ <strong>Tiempo estimado:</strong> ${p.time}</p>
+            <p>✨ <strong>Personalización:</strong> ${p.options}</p>
+          </div>
+          <button onclick="selectProductForQuote('${p.category}', '${p.name.replace(/'/g, "\\'")}')" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 rounded-xl text-xs shadow">
+            Solicitar este trabajo
+          </button>
+        </div>
+      `;
+    }
+
+    function openCategory(catName) {
+      switchTab("catalog");
+      filterCatalog(catName);
+    }
+
+    function filterCatalog(catName) {
+      const list = document.getElementById("catalog-list");
+      const items = catName === "ALL" ? INITIAL_PRODUCTS : INITIAL_PRODUCTS.filter(p => p.category === catName);
+      list.innerHTML = items.map(p => renderProductCard(p)).join("");
+    }
+
+    function selectProductForQuote(cat, name) {
+      document.getElementById("f-category").value = cat;
+      document.getElementById("f-product").value = name;
+      switchTab("quote");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function switchTab(tab) {
+      ["home", "catalog", "quote", "admin"].forEach(t => {
+        document.getElementById("screen-" + t).classList.add("hidden");
+        const navBtn = document.getElementById("nav-" + t);
+        navBtn.classList.remove("tab-active");
+        navBtn.classList.add("text-gray-500");
+      });
+      document.getElementById("screen-" + tab).classList.remove("hidden");
+      const activeBtn = document.getElementById("nav-" + tab);
+      activeBtn.classList.add("tab-active");
+      activeBtn.classList.remove("text-gray-500");
+    }
+
+    function toggleAddressField() {
+      const method = document.getElementById("f-delivery").value;
+      const addr = document.getElementById("f-address");
+      if (method === "Consultar por entrega") addr.classList.remove("hidden");
+      else addr.classList.add("hidden");
+    }
+
+    function handleImageSelection(event) {
+      const files = Array.from(event.target.files);
+      const errEl = document.getElementById("img-error");
+      errEl.classList.add("hidden");
+
+      for (const file of files) {
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+          errEl.textContent = "Formato no válido. Solo se permiten imágenes JPG, PNG o WEBP.";
+          errEl.classList.remove("hidden");
+          continue;
+        }
+        if (file.size > 8 * 1024 * 1024) {
+          errEl.textContent = `La imagen ${file.name} supera los 8 MB permitidos.`;
+          errEl.classList.remove("hidden");
+          continue;
+        }
+        selectedFiles.push(file);
+      }
+      renderImagePreviews();
+    }
+
+    function renderImagePreviews() {
+      const container = document.getElementById("img-preview-list");
+      container.innerHTML = selectedFiles.map((file, idx) => {
+        const url = URL.createObjectURL(file);
+        return `
+          <div class="relative w-20 h-20 flex-shrink-0">
+            <img src="${url}" class="w-20 h-20 object-cover rounded-xl border" />
+            <button onclick="removeImage(${idx})" class="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">✕</button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function removeImage(idx) {
+      selectedFiles.splice(idx, 1);
+      renderImagePreviews();
+    }
+
+    function prepareQuoteReview() {
+      const name = document.getElementById("f-name").value.trim();
+      const phone = document.getElementById("f-phone").value.trim();
+      const email = document.getElementById("f-email").value.trim();
+      const district = document.getElementById("f-district").value.trim();
+      const category = document.getElementById("f-category").value;
+      const product = document.getElementById("f-product").value.trim();
+      const desc = document.getElementById("f-desc").value.trim();
+      const grade = document.getElementById("f-grade").value.trim();
+      const dim = document.getElementById("f-dim").value.trim();
+      const qty = document.getElementById("f-qty").value.trim();
+      const mat = document.getElementById("f-mat").value.trim();
+      const colors = document.getElementById("f-colors").value.trim();
+      const theme = document.getElementById("f-theme").value.trim();
+      const text = document.getElementById("f-text").value.trim();
+      const notes = document.getElementById("f-notes").value.trim();
+      const date = document.getElementById("f-date").value.trim();
+      const budget = document.getElementById("f-budget").value.trim();
+      const delivery = document.getElementById("f-delivery").value;
+      const address = document.getElementById("f-address").value.trim();
+
+      const errors = [];
+      if (name.length < 3) errors.push("Ingresa tus nombres y apellidos completos (obligatorio).");
+      if (!/^\d{7,15}$/.test(phone.replace(/\s+/g, ""))) errors.push("Ingresa un número de celular válido (obligatorio).");
+      if (!product) errors.push("Indica el nombre del producto o proyecto.");
+      if (desc.length < 8) errors.push("Detalla la descripción de lo que necesitas.");
+      if (!qty || parseInt(qty) < 1) errors.push("La cantidad debe ser al menos 1.");
+      if (!date) errors.push("Selecciona la fecha en la que necesitas el trabajo.");
+      if (delivery === "Consultar por entrega" && !address) errors.push("Indica la dirección o referencia de entrega.");
+
+      const errBox = document.getElementById("form-errors");
+      if (errors.length > 0) {
+        errBox.innerHTML = errors.map(e => `<div>• ${e}</div>`).join("");
+        errBox.classList.remove("hidden");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      errBox.classList.add("hidden");
+
+      currentPreparedMessage = `NUEVA SOLICITUD DE COTIZACIÓN
+Dulces Manualidades Ica
+
+DATOS DEL CLIENTE
+Nombre: ${name}
+Celular: ${phone}
+Correo: ${email || "No especificado"}
+Distrito: ${district || "No especificado"}
+
+DETALLES DEL PEDIDO
+Categoría: ${category}
+Trabajo solicitado: ${product}
+Descripción: ${desc}
+Grado escolar: ${grade || "No especificado"}
+Dimensiones: ${dim || "A consultar"}
+Materiales: ${mat || "A consultar"}
+Cantidad: ${qty}
+Colores: ${colors || "A elección"}
+Tema o personaje: ${theme || "No especificado"}
+Texto personalizado: ${text || "Ninguno"}
+Fecha requerida: ${date}
+Presupuesto aproximado: ${budget ? "S/ " + budget : "Por cotizar"}
+Modalidad de entrega: ${delivery}
+Dirección o referencia: ${delivery === "Consultar por entrega" ? address : "Recojo en persona"}
+Instrucciones adicionales: ${notes || "Ninguna"}
+
+Solicito una cotización para este trabajo. Quedo atento/a a su respuesta.`;
+
+      currentPreparedOrder = {
+        id: "SOL-" + Math.floor(100000 + Math.random() * 900000),
+        clientName: name,
+        clientPhone: phone,
+        work: `${category} - ${product}`,
+        date: date,
+        price: budget ? parseFloat(budget) : null,
+        status: "Nueva solicitud",
+        notes: "Preparado desde el formulario de la App"
+      };
+
+      document.getElementById("modal-message-preview").textContent = currentPreparedMessage;
+      document.getElementById("modal-img-notice").classList.toggle("hidden", selectedFiles.length === 0);
+      document.getElementById("review-modal").classList.remove("hidden");
+    }
+
+    function confirmAndOpenWhatsApp() {
+      if (currentPreparedOrder) {
+        const orders = getOrders();
+        orders.unshift(currentPreparedOrder);
+        saveOrders(orders);
+        renderAdminOrders();
+      }
+      document.getElementById("modal-stage-title").textContent = "2. Conversación de WhatsApp Abierta";
+      document.getElementById("modal-stage-banner").textContent =
+        "Estado: Mensaje abierto en WhatsApp y registrado localmente. IMPORTANTE: Pulsa el botón 'Enviar' dentro de WhatsApp para que Dulces Manualidades Ica reciba tu solicitud.";
+
+      const url = `https://api.whatsapp.com/send?phone=${BUSINESS_PHONE_INTL}&text=${encodeURIComponent(currentPreparedMessage)}`;
+      window.open(url, "_blank");
+    }
+
+    function copyWhatsAppMessage() {
+      navigator.clipboard.writeText(currentPreparedMessage);
+      alert("Mensaje copiado al portapapeles. Puedes pegarlo en WhatsApp al 936880308.");
+    }
+
+    function closeReviewModal() {
+      document.getElementById("review-modal").classList.add("hidden");
+    }
+
+    function clearForm() {
+      ["f-name","f-phone","f-email","f-district","f-product","f-desc","f-grade","f-dim","f-mat","f-colors","f-theme","f-text","f-notes","f-date","f-budget","f-address"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+      document.getElementById("f-qty").value = "1";
+      selectedFiles = [];
+      renderImagePreviews();
+      document.getElementById("form-errors").classList.add("hidden");
+    }
+
+    // FUNCIONES ADMINISTRATIVAS
+    function loginAdmin() {
+      const pin = document.getElementById("admin-pin").value;
+      if (pin === "9368") {
+        document.getElementById("admin-login-box").classList.add("hidden");
+        document.getElementById("admin-dashboard").classList.remove("hidden");
+        renderAdminOrders();
+      } else {
+        alert("PIN incorrecto.");
+      }
+    }
+
+    function logoutAdmin() {
+      document.getElementById("admin-pin").value = "";
+      document.getElementById("admin-login-box").classList.remove("hidden");
+      document.getElementById("admin-dashboard").classList.add("hidden");
+    }
+
+    function registerManualOrder() {
+      const client = document.getElementById("adm-client").value.trim();
+      const phone = document.getElementById("adm-phone").value.trim();
+      const work = document.getElementById("adm-work").value.trim();
+      const price = document.getElementById("adm-price").value.trim();
+      const date = document.getElementById("adm-date").value;
+      if (!client || !work) {
+        alert("Completa al menos el nombre del cliente y el trabajo solicitado.");
+        return;
+      }
+      const orders = getOrders();
+      orders.unshift({
+        id: "WSP-" + Math.floor(100000 + Math.random() * 900000),
+        clientName: client,
+        clientPhone: phone,
+        work: work,
+        date: date || "Por definir",
+        price: price ? parseFloat(price) : null,
+        status: price ? "Cotización enviada" : "Nueva solicitud",
+        notes: "Registrado manualmente desde WhatsApp"
+      });
+      saveOrders(orders);
+      renderAdminOrders();
+      document.getElementById("adm-client").value = "";
+      document.getElementById("adm-phone").value = "";
+      document.getElementById("adm-work").value = "";
+      document.getElementById("adm-price").value = "";
+    }
+
+    function updateOrderStatus(idx, newStatus) {
+      const orders = getOrders();
+      orders[idx].status = newStatus;
+      saveOrders(orders);
+      renderAdminOrders();
+    }
+
+    function renderAdminOrders() {
+      const list = document.getElementById("admin-orders-list");
+      const orders = getOrders();
+      if (orders.length === 0) {
+        list.innerHTML = `<p class="text-xs text-gray-500">No hay pedidos registrados aún.</p>`;
+        return;
+      }
+      list.innerHTML = orders.map((o, idx) => `
+        <div class="border rounded-xl p-3 space-y-1.5 bg-gray-50">
+          <div class="flex justify-between text-xs font-bold">
+            <span class="text-purple-800">${o.id} • ${o.clientName} (${o.clientPhone})</span>
+            <span class="text-pink-600">${o.price ? "S/ " + o.price.toFixed(2) : "Sin cotizar"}</span>
+          </div>
+          <p class="text-xs text-gray-800 font-semibold">${o.work}</p>
+          <p class="text-[11px] text-gray-500">Entrega: ${o.date} | ${o.notes}</p>
+          <select onchange="updateOrderStatus(${idx}, this.value)" class="w-full border rounded-lg p-1.5 text-xs bg-white font-semibold">
+            ${ORDER_STATUSES.map(st => `<option value="${st}" ${st === o.status ? "selected" : ""}>Estado: ${st}</option>`).join("")}
+          </select>
+        </div>
+      `).join("");
+    }
+
+    initApp();
+  </script>
+</body>
+</html>
